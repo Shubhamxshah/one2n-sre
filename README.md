@@ -13,11 +13,14 @@ To run this application use docker compose.
 ### Create a student   
   
 Method: `POST`  
+
 URL: `/api/v1/student`  
+
 Body:   
 `rollId` (`number`) **required** : unique rollId for student   
 `name` (`string`) **required** : name of the student   
 `standard` (`standard`) **required** : standard of the student  
+
 Response codes:   
 `200`: OK  
 `300`: Incorrect inputs  
