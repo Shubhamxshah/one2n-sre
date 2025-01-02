@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/index.ts",
+    "test": "jest",
+    "dev": "nodemon src/bin.ts",
     "build": "tsc -b",
-    "start": "node dist/index.js"
+    "start": "node dist/bin.js"
   },
   "keywords": [],
   "author": "",
@@ -16,9 +16,15 @@
     "@prisma/client": "^6.1.0",
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.3",
-    "express": "^4.21.2"
+    "@types/supertest": "^6.0.2",
+    "express": "^4.21.2",
+    "supertest": "^7.0.0"
   },
   "devDependencies": {
-    "prisma": "^6.1.0"
+    "@jest/globals": "^29.7.0",
+    "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
+    "prisma": "^6.1.0",
+    "ts-jest": "^29.2.5"
   }
 }

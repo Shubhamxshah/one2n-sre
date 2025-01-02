@@ -4,15 +4,16 @@ import { prisma } from "../lib/prisma";
 export const studentRouter = Router();
 
 studentRouter.post("/student", async (req, res) => {
-  const { name, standard } = req.body;
+  const { rollId, name, standard } = req.body;
 
-  if (typeof name !== "string" || typeof standard !== "number") {
+  if (typeof name !== "string" || typeof standard !== "number" || typeof rollId !== "number") {
     res.status(300).json({message: `incorrect input types`})
   }
 
   try {
   const student = await prisma.student.create({
     data: {
+      rollId: rollId,   
       name: name, 
       standard: standard,
     },
@@ -34,16 +35,16 @@ studentRouter.get("/all-students", async (_, res) => {
 })
 
 studentRouter.get("/student", async (req, res) => {
-  const {id} = req.body;
+  const {rollId} = req.body;
 
-  if (typeof id !== "number") {
+  if (typeof rollId !== "number") {
     res.status(300).json({message: `incorrect inputs`})
   }
 
   try {
     const student = await prisma.student.findMany({
       where: {
-      id,
+      rollId,
     }
     })
 
@@ -54,41 +55,42 @@ studentRouter.get("/student", async (req, res) => {
 })
 
 studentRouter.put("/student" , async (req, res) => {
-  const {id, name, standard} = req.body;
+  const {rollId, name, standard} = req.body;
 
-  if (typeof id !== "number" || typeof name !== "string" || typeof standard !== "number") {
+  if (typeof rollId !== "number" || typeof name !== "string" || typeof standard !== "number") {
     res.status(300).json({message: `incorrect input types`})
   }
 
   try {
     const student = await prisma.student.update({
       where: {
-        id : id
+        rollId,  
       }, 
       data: {
+        rollId: rollId, 
         name: name, 
         standard: standard
       }
     })
 
-    res.status(201).json({message: ` student details updated ${student.name} ${student.standard}`})
+    res.status(201).json({message: `student details updated ${student.name} ${student.standard}`})
   } catch (error) {
     res.status(400).json({message: `error updating student details`})
   }
 })
 
 studentRouter.delete("/student", async (req, res) => {
-  const {id} = req.body; 
+  const {rollId} = req.body; 
 
   try {
     const student = await prisma.student.delete({
       where: {
-        id: id
+        rollId: rollId,
       }
     }) 
 
-    res.status(201).json({message: `student with id ${student.id} deleted `})
+    res.status(201).json({message: `student with id ${student.rollId} deleted `})
   } catch (error) {
-    res.status(400).json({message: `error deleting student with id ${id}`})
+    res.status(400).json({message: `error deleting student with id ${rollId}`})
   }
 })

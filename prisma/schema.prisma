@@ -14,7 +14,8 @@ datasource db {
 }
 
 model student {
-  id        Int        @id @default(autoincrement())
-  name      String     
+  id           Int        @id @default(autoincrement())
+  rollId       Int        @unique
+  name         String     
   standard     Int 
 }
