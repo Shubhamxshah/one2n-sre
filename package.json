@@ -10,7 +10,7 @@
     "start": "node dist/bin.js",
     "format": "pnpm exec prettier . --write",
     "format:check": "prettier --check \"**/*.{ts,tsx,json}\"",
-    "lint:check": "eslint --max-warnings 0 .",
+    "lint:check": "eslint --max-warnings 0 . --fix",
     "prepare": "husky"
   },
   "lint-staged": {
