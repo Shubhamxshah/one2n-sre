@@ -26,6 +26,12 @@ jobs:
       - name: Check formatting
         run: pnpm run format:check
 
+      - name: prisma generate
+        run: pnpm dlx prisma@6.1.0 generate
+
+      - name: prisma migrate
+        run: pnpm dlx prisma@6.1.0 migrate deploy
+
       - name: run the application
         run: docker compose up --build --no-deps --force-recreate -d
 
