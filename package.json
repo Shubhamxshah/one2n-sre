@@ -9,6 +9,8 @@
     "build": "tsc -b",
     "start": "node dist/bin.js",
     "format": "pnpm exec prettier . --write",
+    "format:check": "prettier --check \"**/*.{ts,tsx,json}\"",
+    "lint:check": "eslint --max-warnings 0 --config .eslintrc .",
     "prepare": "husky"
   },
   "lint-staged": {
