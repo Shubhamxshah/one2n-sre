@@ -23,7 +23,7 @@ studentRouter.post("/student", async (req, res) => {
       },
     });
     res.status(200).json({ message: `new student ${student.name} created` });
-  } catch (e) {
+  } catch {
     res.status(400).json({ message: `error creating student ${name}` });
   }
 });
@@ -32,7 +32,7 @@ studentRouter.get("/all-students", async (_, res) => {
   try {
     const students = await prisma.student.findMany();
     res.status(201).json(students);
-  } catch (error) {
+  } catch {
     res.status(401).json({ message: "error getting all students" });
   }
 });
@@ -52,7 +52,7 @@ studentRouter.get("/student", async (req, res) => {
     });
 
     res.status(201).json(student);
-  } catch (error) {
+  } catch {
     res.status(400).json({ message: "error getting student" });
   }
 });
@@ -83,7 +83,7 @@ studentRouter.put("/student", async (req, res) => {
     res.status(201).json({
       message: `student details updated ${student.name} ${student.standard}`,
     });
-  } catch (error) {
+  } catch {
     res.status(400).json({ message: `error updating student details` });
   }
 });
@@ -101,7 +101,7 @@ studentRouter.delete("/student", async (req, res) => {
     res
       .status(201)
       .json({ message: `student with id ${student.rollId} deleted ` });
-  } catch (error) {
+  } catch {
     res
       .status(400)
       .json({ message: `error deleting student with id ${rollId}` });
