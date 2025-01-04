@@ -27,7 +27,7 @@ jobs:
         run: pnpm run format:check
 
       - name: run the application
-        run: docker compose up -d
+        run: docker compose up --build --no-deps --force-recreate -d
 
       - name: perform tests
         run: pnpm run test
