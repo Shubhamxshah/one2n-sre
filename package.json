@@ -7,7 +7,12 @@
     "test": "jest",
     "dev": "nodemon src/bin.ts",
     "build": "tsc -b",
-    "start": "node dist/bin.js"
+    "start": "node dist/bin.js",
+    "format": "pnpm exec prettier . --write",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +28,10 @@
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.14",
+    "husky": "^9.1.7",
     "jest": "^29.7.0",
+    "lint-staged": "^15.3.0",
+    "prettier": "3.4.2",
     "prisma": "^6.1.0",
     "ts-jest": "^29.2.5"
   }

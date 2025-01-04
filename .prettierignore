@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.md
+package.json
+pnpm-lock.yaml
+tsconfig.json
+jest.config.js
