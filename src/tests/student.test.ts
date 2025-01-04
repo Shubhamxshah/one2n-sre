@@ -25,7 +25,7 @@ describe("Routes /student", () => {
     );
   });
 
-  it("should delete the newly created user", async () => {
+  it("should delete the newly created student", async () => {
     const res = await request(app).delete("/api/v1/student").send({
       rollId: 111,
     });

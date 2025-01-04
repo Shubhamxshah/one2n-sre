@@ -21,12 +21,17 @@ services:
       - "8080:8080"
 
   backend:
-    image: shubhamxshah/backenddev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        DATABASE_URL: "postgresql://admin:password@postgres_db:5432/mydb?schema=public"
     container_name: backend_app
     depends_on:
       - postgresql
     ports:
       - "3002:3002"
+      - "5555:5555"
     environment:
       DATABASE_URL: "postgresql://admin:password@postgres_db:5432/mydb?schema=public"
 

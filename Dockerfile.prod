@@ -17,6 +17,7 @@ RUN pnpm install --frozen-lockfile --prod
 COPY --from=builder /app/dist ./dist 
 ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
+RUN DATABASE_URL=${DATABASE_URL} pnpm dlx prisma@6.1.0 generate
 EXPOSE 3002
 CMD ["node", "dist/bin.js"]
 

@@ -8,6 +8,6 @@ COPY . .
 ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
 EXPOSE 3002
-RUN pnpm prisma generate
+RUN pnpm dlx prisma@6.1.0 generate
 CMD ["sh", "-c", "pnpm prisma migrate deploy && nodemon src/bin.ts"]
 

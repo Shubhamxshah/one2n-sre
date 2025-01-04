@@ -3,6 +3,8 @@ on:
   pull_request:
     branches:
       - "**"
+  push:
+    branches: ["main"]
 
 jobs:
   Continuous-Integration:
@@ -23,3 +25,12 @@ jobs:
 
       - name: Check formatting
         run: pnpm run format:check
+
+      - name: run the application
+        run: docker compose up -d
+
+      - name: perform tests
+        run: pnpm run test
+
+      - name: close the application
+        run: docker compose down
