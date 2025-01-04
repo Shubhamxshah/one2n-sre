@@ -7,7 +7,7 @@ on:
 jobs:
   Continuous-Integration:
     name: Performs linting, formatting on the application
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout the Repository
         uses: actions/checkout@v3
