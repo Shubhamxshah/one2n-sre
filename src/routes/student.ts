@@ -52,8 +52,8 @@ studentRouter.get("/student", async (req, res) => {
     });
 
     res.status(201).json(student);
-  } catch {
-    res.status(400).json({ message: "error getting student" });
+  } catch (e) {
+    res.status(400).json({ message: e });
   }
 });
 
