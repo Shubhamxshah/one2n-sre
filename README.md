@@ -53,7 +53,7 @@ cd one2n-sre
    
 2. run  
 ```
-docker compose update
+docker compose up
 ```
 3. To visulalise data:   
 on adminer: visit `http://localhost:8080`   
@@ -75,6 +75,10 @@ npx prisma studio
 ```
 the prisma studio is now running on `http://localhost:5555`  
    
+4. To stop the containers:  
+```
+docker compose down
+```
 ## postman api collection:   
   
 ### Create a student   
