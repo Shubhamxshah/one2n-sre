@@ -5,11 +5,24 @@ on:
       - "**"
   push:
     branches: ["main"]
-
 jobs:
   Continuous-Integration:
     name: Performs linting, formatting on the application
     runs-on: self-hosted
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: mydb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Checkout the Repository
         uses: actions/checkout@v3
@@ -28,18 +41,25 @@ jobs:
 
       - name: prisma generate
         run: pnpm dlx prisma@6.1.0 generate
+        env:
+          DATABASE_URL: "postgresql://admin:password@localhost:5432/mydb?schema=public"
 
-      - name: run the application
-        run: docker compose up --build --no-deps --force-recreate -d
+      - name: Wait for PostgreSQL
+        run: |
+          while ! nc -z localhost 5432; do
+            echo "Waiting for PostgreSQL to start..."
+            sleep 1
+          done
 
-      - name: add env for tests to run
-        run: touch .env
-
-      - name: add db url
-        run: echo 'DATABASE_URL="postgresql://admin:password@localhost:5432/mydb?schema=public"' > .env
+      - name: Run Prisma Migrations
+        run: pnpm dlx prisma migrate deploy
+        env:
+          DATABASE_URL: "postgresql://admin:password@localhost:5432/mydb?schema=public"
 
       - name: perform tests
         run: pnpm run test
+        env:
+          DATABASE_URL: "postgresql://admin:password@localhost:5432/mydb?schema=public"
 
       - name: close the application
         run: docker compose down
