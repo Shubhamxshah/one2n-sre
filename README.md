@@ -8,14 +8,18 @@ This repo is a part of sre bootcamp created by one2n.in . It includes exercises 
    
 To run this application using docker:
 
-## Installation using docker  
+### Installation using docker  
    
-To build or run this application using docker, make sure you have docker installed: `https://docs.docker.com/engine/install/`
+To build or run this application using docker, make sure you have docker installed:   
+`https://docs.docker.com/engine/install/`  
 
-To build this application using docker,  
+To build this application using docker  
 1. clone the repo  
-`git clone https://github.com/shubhamxshah/one2n-sre`  
-`cd one2n-sre`  
+
+```
+git clone https://github.com/shubhamxshah/one2n-sre  
+cd one2n-sre   
+```
   
 2. build the image to run in development mode  
 `docker build -t one2n-sre/dev:latest --target dev .`  
@@ -27,11 +31,14 @@ build the image to run in production mode
 run the image in production mode  
 `docker run -p 3002:3002 one2n-sre/prod:latest`  
 
-## Installation using docker compose 
+### Installation using docker compose 
 
 1. clone the repo 
-`git clone https://github.com/shubhamxshah/one2n-sre`  
-`cd one2n-sre`  
+```
+git clone https://github.com/shubhamxshah/one2n-sre  
+cd one2n-sre  
+```
+```
    
 2. run `docker compose up`  
 3. To visulalise data:   
@@ -43,12 +50,13 @@ password: `password`
 database: `mydb`  
    
 on prisma studio:  
-create .env in root and add this url: `DATABASE_URL="postgresql://admin:password@localhost:5432/mydb?schema=public"`  
+create .env in root and add this url:   
+`DATABASE_URL="postgresql://admin:password@localhost:5432/mydb?schema=public"`  
 run: `npx prisma studio`  
 the prisma studio is now running on `http://localhost:5555`  
    
 ## postman api collection:   
-   
+  
 ### Create a student   
   
 Method: `POST`  
@@ -64,7 +72,7 @@ Response codes:
 `200`: OK  
 `300`: Incorrect inputs  
 `400`: Error processing   
-
+    
 ### update a student   
   
 Method: `PUT`  
@@ -80,7 +88,7 @@ Response codes:
 `201`: OK  
 `300`: Incorrect inputs  
 `400`: Error processing   
-
+    
 ### delete a student   
   
 Method: `DELETE`  
@@ -94,7 +102,7 @@ Response codes:
 `201`: OK  
 `300`: Incorrect inputs  
 `400`: Error processing   
-
+    
 ### get a student   
   
 Method: `GET`  
@@ -108,7 +116,7 @@ Response codes:
 `200`: OK  
 `300`: Incorrect inputs  
 `400`: Error processing   
-
+    
 ### get all students   
   
 Method: `GET`  
