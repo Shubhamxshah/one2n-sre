@@ -6,7 +6,25 @@ This repo is a part of sre bootcamp created by one2n.in . It includes exercises 
 
 ## Installation   
    
-To run this application use docker compose.   
+To run this application using docker:
+
+## Installation using docker 
+
+To build this application using docker,  
+1. clone the repo  
+`git clone https://github.com/shubhamxshah/one2n-sre`  
+`cd one2n-sre`  
+  
+2. build the image to run in development mode  
+`docker build -t one2n-sre/dev:latest --target dev .`  
+build the image to run in production mode  
+`docker build -t one2n-sre/prod:latest --target production .`  
+   
+3. run the image in development mode  
+`docker run -p 3002:3002 one2n-sre/dev:latest`  
+run the image in production mode  
+`docker run -p 3002:3002 one2n-sre/prod:latest`  
+
    
 ## postman api collection:   
    

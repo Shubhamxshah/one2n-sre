@@ -1,21 +1,33 @@
-FROM node:20-alpine AS base
+FROM node:20-alpine AS builder 
 
 WORKDIR /app
-COPY package.json pnpm-lock.yaml /app 
-RUN npm install -g pnpm && pnpm install
+RUN npm install -g pnpm typescript 
+COPY package.json pnpm-lock.yaml ./
+COPY prisma ./prisma 
+RUN  pnpm install --frozen-lockfile
 COPY . .
+RUN pnpm run build
 
 FROM node:20-alpine AS dev
-WORKDIR /app 
-COPY --from=base /app /app 
-RUN npm i -g nodemon ts-node
+WORKDIR /app  
+RUN npm i -g pnpm nodemon ts-node
+COPY package.json pnpm-lock.yaml ./ 
+COPY prisma ./prisma 
+RUN pnpm install --frozen-lockfile
+COPY . .
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
 EXPOSE 3002 
 CMD ["nodemon", "src/bin.ts"]
 
 FROM node:20-alpine AS production
+RUN npm install -g pnpm 
 WORKDIR /app 
-COPY --from=base /app /app
-RUN npm i -g ts-node typescript
+COPY package.json pnpm-lock.yaml ./ 
+COPY prisma ./prisma 
+RUN pnpm install --frozen-lockfile --prod 
+COPY --from=builder /app/dist ./dist 
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
 EXPOSE 3002
-RUN npm run build
-CMD ["npm", "run", "start"]
+CMD ["node", "dist/bin.js"]
