@@ -17,8 +17,9 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
-EXPOSE 3002 
-CMD ["nodemon", "src/bin.ts"]
+EXPOSE 3002
+RUN pnpm prisma generate
+CMD ["sh", "-c", "pnpm prisma migrate deploy && nodemon src/bin.ts"]
 
 FROM node:20-alpine AS production
 RUN npm install -g pnpm 
