@@ -8,7 +8,9 @@ This repo is a part of sre bootcamp created by one2n.in . It includes exercises 
    
 To run this application using docker:
 
-## Installation using docker 
+## Installation using docker  
+   
+To build or run this application using docker, make sure you have docker installed: `https://docs.docker.com/engine/install/`
 
 To build this application using docker,  
 1. clone the repo  
@@ -25,6 +27,25 @@ build the image to run in production mode
 run the image in production mode  
 `docker run -p 3002:3002 one2n-sre/prod:latest`  
 
+## Installation using docker compose 
+
+1. clone the repo 
+`git clone https://github.com/shubhamxshah/one2n-sre`  
+`cd one2n-sre`  
+   
+2. run `docker compose up`  
+3. To visulalise data:   
+on adminer: visit `http://localhost:8080` and enter following details:
+database:  `postgresql`  
+server: `postgres_db`  
+username: `admin`  
+password: `password`  
+database: `mydb`  
+   
+on prisma studio:  
+create .env in root and add this url: `DATABASE_URL="postgresql://admin:password@localhost:5432/mydb?schema=public"`  
+run: `npx prisma studio`  
+the prisma studio is now running on `http://localhost:5555`  
    
 ## postman api collection:   
    
