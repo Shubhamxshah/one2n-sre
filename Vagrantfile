@@ -4,7 +4,13 @@ Vagrant.configure("2") do |config|
     override.vm.box = 'digital_ocean'
     override.vm.box_url = "https://github.com/devopsgroup-io/vagrant-digitalocean/raw/master/box/digital_ocean.box"
     
-    provider.token = 'dop_v1_1893cfecc73576e887bccb52d69f5b7222efb8856212e41ca296e059594ae15c'
+    if ENV['DIGITALOCEAN_TOKEN']
+      provider.token = ENV['DIGITALOCEAN_TOKEN']
+    else
+      puts "ERROR: DIGITALOCEAN_TOKEN environment variable not set"
+      exit 1
+    end
+
     provider.image = 'ubuntu-20-04-x64'
     provider.region = 'blr1'
     provider.size = 's-2vcpu-2gb'

@@ -79,6 +79,26 @@ the prisma studio is now running on `http://localhost:5555`
 ```
 docker compose down
 ```
+
+## To run the application in a vm using vagrant:  
+   
+1. install vagrant and required vagrant plugins:  
+```
+https://developer.hashicorp.com/vagrant/install 
+
+vagrant plugin install vagrant-digitalocean
+```
+   
+2. setup your digital ocean token: 
+```
+export DIGITALOCEAN_TOKEN='your_toke_here'
+```
+3. start the vagrant box:
+```
+source .env # if using .env file
+vagrant up --provider=digital_ocean
+```
+
 ## postman api collection:   
   
 ### Create a student   
