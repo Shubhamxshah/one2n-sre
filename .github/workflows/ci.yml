@@ -9,7 +9,7 @@ on:
 jobs:
   Continuous-Integration:
     name: Performs linting, formatting on the application
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres
