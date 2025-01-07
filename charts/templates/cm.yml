@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pgconfig
+  namespace: student-api
+  labels:
+    app: postgres
+data:
+  POSTGRES_DB: proddb
+  POSTGRES_USER: produser
+  POSTGRES_PASSWORD: prodpw
+---
+
