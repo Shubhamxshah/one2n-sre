@@ -4,20 +4,18 @@ WORKDIR /app
 RUN npm install -g pnpm typescript 
 COPY package.json pnpm-lock.yaml ./
 COPY prisma ./prisma 
-RUN  pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm run build
+RUN pnpm dlx prisma@6.1.0 generate
 
 FROM node:20-alpine AS production
-RUN npm install -g pnpm 
 WORKDIR /app 
+RUN npm i -g pnpm
 COPY package.json pnpm-lock.yaml ./ 
 COPY prisma ./prisma 
 RUN pnpm install --frozen-lockfile 
 COPY --from=builder /app/dist ./dist 
-ARG DATABASE_URL
-ENV DATABASE_URL=${DATABASE_URL}
-RUN DATABASE_URL=${DATABASE_URL} pnpm dlx prisma@6.1.0 generate
 EXPOSE 3002
-CMD ["node", "dist/bin.js"]
+CMD ["sh", "-c", "pnpm prisma migrate deploy && node dist/bin.js"]
 

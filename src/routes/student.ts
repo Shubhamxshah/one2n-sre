@@ -3,15 +3,19 @@ import { prisma } from "../lib/prisma";
 
 export const studentRouter = Router();
 
-studentRouter.post("/student", async (req, res) => {
+studentRouter.post("/student", async (req, res): Promise<void> => {
   const { rollId, name, standard } = req.body;
 
   if (
+    !name ||
+    !standard ||
+    !rollId ||
     typeof name !== "string" ||
     typeof standard !== "number" ||
     typeof rollId !== "number"
   ) {
     res.status(300).json({ message: `incorrect input types` });
+    return;
   }
 
   try {
@@ -40,8 +44,9 @@ studentRouter.get("/all-students", async (_, res) => {
 studentRouter.get("/student", async (req, res) => {
   const { rollId } = req.body;
 
-  if (typeof rollId !== "number") {
+  if (!rollId || typeof rollId !== "number") {
     res.status(300).json({ message: `incorrect inputs` });
+    return;
   }
 
   try {
@@ -61,11 +66,15 @@ studentRouter.put("/student", async (req, res) => {
   const { rollId, name, standard } = req.body;
 
   if (
+    !rollId ||
+    !name ||
+    !standard ||
     typeof rollId !== "number" ||
     typeof name !== "string" ||
     typeof standard !== "number"
   ) {
     res.status(300).json({ message: `incorrect input types` });
+    return;
   }
 
   try {
@@ -90,6 +99,11 @@ studentRouter.put("/student", async (req, res) => {
 
 studentRouter.delete("/student", async (req, res) => {
   const { rollId } = req.body;
+
+  if (!rollId || typeof rollId !== "number") {
+    res.status(300).json({ message: "Incorrect inputs" });
+    return;
+  }
 
   try {
     const student = await prisma.student.delete({
