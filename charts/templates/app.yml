@@ -18,9 +18,12 @@ spec:
           image: shubhamxshah/one2n-sre-prod:1.0.0
           ports:
             - containerPort: 3002
-          envFrom:
-            - secretRef:
-                name: pg-secret
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres_url
 ---
 apiVersion: v1
 kind: Service
