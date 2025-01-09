@@ -1,0 +1,17 @@
+replicaCount: 1
+serviceAccount:
+  create: true
+  name: "external-secrets"
+
+# If you want to watch specific namespaces, use:
+scopedNamespaces: []  # empty means watch all namespaces
+
+metrics:
+  serviceMonitor:
+    enabled: false  # Set to true if using Prometheus Operator
+
+# For Vault integration:
+webhook:
+  serviceAccount:
+    create: true
+    name: "external-secrets-webhook"
