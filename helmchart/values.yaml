@@ -1,1 +1,39 @@
+namespace: student-api
+
+app:
+  name: student-app
+  replicaCount: 2
+  image:
+    repository: shubhamxshah/one2n-sre-prod
+    tag: 1.0.0
+  service:
+    type: LoadBalancer
+    port: 3002
+    targetPort: 3002
+
+database:
+  name: postgres
+  replicaCount: 1
+  image:
+    repository: postgres
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 5432
+    targetPort: 5432
+  persistence:
+    storageClass: managed-csi
+    size: 5Gi
+    mountPath: /var/lib/postgresql/data
+    subPath: pgdata
+
+vault:
+  serviceAccount: vault-auth
+  server: "http://vault.vault:8200"
+  path: "secret"
+  version: "v2"
+  role: "k8s-role"
+  secretKey: "postgrespw"
+  refreshInterval: "1m"
+
 

@@ -1,0 +1,13 @@
+{{/*
+Create common labels
+*/}}
+{{- define "student-app.labels" -}}
+app: {{ .Values.app.name }}
+{{- end }}
+
+{{/*
+Create common database labels
+*/}}
+{{- define "student-app.db.labels" -}}
+app: {{ .Values.database.name }}
+{{- end }}

@@ -5,3 +5,5 @@ package.json
 pnpm-lock.yaml
 tsconfig.json
 jest.config.js
+helmchart/
+manifests/
