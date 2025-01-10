@@ -4,7 +4,7 @@ on:
     branches: [main]
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
@@ -19,7 +19,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build and push api
+      - name: Build and push app
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -27,7 +27,7 @@ jobs:
           push: true
           tags: shubhamxshah/one2n-sre-prod:${{ github.sha }}
 
-      - name: Clone staging-ops repo, update, and push
+      - name: Clone one2n-sre repo, update helmchart apptag, and push
         env:
           PAT: ${{ secrets.PAT }}
         run: |
