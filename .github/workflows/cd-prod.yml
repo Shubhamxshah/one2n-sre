@@ -33,8 +33,7 @@ jobs:
         run: |
           git clone https://github.com/Shubhamxshah/one2n-sre.git
           cd one2n-sre
-          sed -i 's|apptag :.*|apptag :${{ github.sha }}|' helmchart/values.yaml
-
+          sed -i 's|apptag:.*|apptag: ${{ github.sha }}|' helmchart/values.yaml
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
           git add helmchart/values.yaml
