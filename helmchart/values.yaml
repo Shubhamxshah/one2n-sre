@@ -5,7 +5,7 @@ app:
   replicaCount: 2
   image:
     repository: shubhamxshah/one2n-sre-prod
-    apptag: 1b5a75db9df0a1e1e1aa5fe824a6d86f78829301
+    apptag: 1fd3e9d3f24dee486f3af367bfb3a9e79d1ffda2
   service:
     type: LoadBalancer
     port: 3002
