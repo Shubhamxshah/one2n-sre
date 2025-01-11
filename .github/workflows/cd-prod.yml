@@ -2,6 +2,8 @@ name: Continuous Deployment
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "helmchart/values.yaml"
 jobs:
   build:
     runs-on: ubuntu-latest
