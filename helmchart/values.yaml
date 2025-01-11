@@ -7,9 +7,12 @@ app:
     repository: shubhamxshah/one2n-sre-prod
     apptag: 12bd59792179dde1f51589885b6db1a0bd78a00b
   service:
+    name: student-service
     type: LoadBalancer
     port: 3002
     targetPort: 3002
+    portname: backend
+
 
 database:
   name: postgres
@@ -36,4 +39,8 @@ vault:
   secretKey: "postgrespw"
   refreshInterval: "1m"
 
-
+monitoring:
+  name: student-monitoring
+  namespace: monitoring 
+  release: prometheus
+  servicePortName: backend

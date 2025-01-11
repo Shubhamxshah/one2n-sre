@@ -1,12 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: student-service
+  name: {{ .Values.app.service.name }}
   namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.app.service.name }}
 spec:
   type: {{ .Values.app.service.type }}
   ports:
     - port: {{ .Values.app.service.port }}
       targetPort: {{ .Values.app.service.targetPort }}
+      name: {{ .Values.app.service.portname }}
   selector:
     {{- include "student-app.labels" . | nindent 4 }}
