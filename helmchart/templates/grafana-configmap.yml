@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: studentapi-dashboard
+  name: fastapi-dashboard
   namespace: monitoring
   labels:
     grafana_dashboard: "1"
@@ -77,7 +77,7 @@ data:
                     {
                         "expr": "rate(http_request_total[1m])",
                         "interval": "",
-                        "legendFormat": "{{method}} {{path}}",
+                        "legendFormat": "{{`{{method}} {{path}}`}}",
                         "refId": "A"
                     }
                 ],
@@ -172,7 +172,7 @@ data:
                     {
                         "expr": "rate(http_request_duration_seconds_sum[1m]) / rate(http_request_duration_seconds_count[1m])",
                         "interval": "",
-                        "legendFormat": "{{method}} {{path}}",
+                        "legendFormat": "{{`{{method}} {{path}}`}}",
                         "refId": "A"
                     }
                 ],
@@ -420,7 +420,7 @@ data:
         },
         "timepicker": {},
         "timezone": "",
-        "title": "FastAPI Python Application Dashboard",
-        "uid": "python_fastapi_dashboard",
+        "title": "NOdejs student Application Dashboard",
+        "uid": "nodejs_studentapi_dashboard",
         "version": 1
     }
