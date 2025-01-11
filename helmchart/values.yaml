@@ -41,6 +41,6 @@ vault:
 
 monitoring:
   name: student-monitoring
-  namespace: monitoring 
   release: prometheus
   servicePortName: backend
+  interval: 15s
