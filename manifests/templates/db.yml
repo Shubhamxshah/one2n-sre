@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: postgres
   namespace: student-api
@@ -19,11 +19,6 @@ spec:
           ports:
             - containerPort: 5432
           env:
-            - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: postgres_db
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
@@ -39,10 +34,15 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: postgresdb
-      volumes:
-        - name: postgresdb
-          persistentVolumeClaim:
-            claimName: pg-pvc
+  volumeClaimTemplates:
+    - metadata: 
+        name: postgresdb 
+      spec: 
+        accessModes: ["ReadWriteOncePod"]
+        storageClassName: "managed-csi"
+        resources: 
+          requests: 
+            storage: 3Gi
 ---
 apiVersion: v1
 kind: Service

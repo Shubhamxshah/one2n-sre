@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet 
 metadata:
   name: {{ .Values.database.name }}
   namespace: {{ .Values.namespace }}
@@ -19,11 +19,6 @@ spec:
           ports:
             - containerPort: {{ .Values.database.service.port }}
           env:
-            - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: postgres_db
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
@@ -39,7 +34,12 @@ spec:
           volumeMounts:
             - mountPath: {{ .Values.database.persistence.mountPath }}
               name: postgresdb
-      volumes:
-        - name: postgresdb
-          persistentVolumeClaim:
-            claimName: pg-pvc
+  volumeClaimTemplates:
+    - metadata: 
+        name: postgresdb
+      spec: 
+        accessModes: ["ReadWriteOncePod"]
+        storageClassName: {{ .Values.database.persistence.storageClass }}
+        resources:
+          requests: 
+            storage: {{ .Values.database.persistence.size }}

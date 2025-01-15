@@ -26,7 +26,7 @@ database:
     targetPort: 5432
   persistence:
     storageClass: managed-csi
-    size: 5Gi
+    size: 3Gi
     mountPath: /var/lib/postgresql/data
     subPath: pgdata
 
