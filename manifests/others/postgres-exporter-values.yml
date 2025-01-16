@@ -1,0 +1,14 @@
+config:
+  datasource:
+    host: 'pg-service.student-api.svc.cluster.local'
+    userSecret: 
+      name: postgres-secret  
+      key: postgres_user
+    passwordSecret: 
+      name: postgres-secret 
+      key: postgres_password
+
+serviceMonitor:
+  enabled: true
+  labels:
+    release: kps # release name of kube-prometheus-stack
