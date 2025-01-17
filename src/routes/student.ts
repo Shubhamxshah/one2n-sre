@@ -14,6 +14,7 @@ studentRouter.post("/student", async (req, res): Promise<void> => {
     typeof standard !== "number" ||
     typeof rollId !== "number"
   ) {
+    console.log("incorrect input types");
     res.status(300).json({ message: `incorrect input types` });
     return;
   }
@@ -28,6 +29,7 @@ studentRouter.post("/student", async (req, res): Promise<void> => {
     });
     res.status(200).json({ message: `new student ${student.name} created` });
   } catch {
+    console.log("error creating a new student");
     res.status(400).json({ message: `error creating student ${name}` });
   }
 });
@@ -35,8 +37,10 @@ studentRouter.post("/student", async (req, res): Promise<void> => {
 studentRouter.get("/all-students", async (_, res) => {
   try {
     const students = await prisma.student.findMany();
+    console.log("students fetched");
     res.status(201).json(students);
   } catch {
+    console.log("error getting all students from database");
     res.status(401).json({ message: "error getting all students" });
   }
 });
@@ -58,6 +62,7 @@ studentRouter.get("/student", async (req, res) => {
 
     res.status(201).json(student);
   } catch (e) {
+    console.log("error getting a particular student from db");
     res.status(400).json({ message: e });
   }
 });
@@ -73,6 +78,7 @@ studentRouter.put("/student", async (req, res) => {
     typeof name !== "string" ||
     typeof standard !== "number"
   ) {
+    console.log("incorrect input types for editing student details");
     res.status(300).json({ message: `incorrect input types` });
     return;
   }
@@ -93,6 +99,7 @@ studentRouter.put("/student", async (req, res) => {
       message: `student details updated ${student.name} ${student.standard}`,
     });
   } catch {
+    console.log("error editing student details");
     res.status(400).json({ message: `error updating student details` });
   }
 });
