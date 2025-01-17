@@ -5,7 +5,7 @@ app:
   replicaCount: 2
   image:
     repository: shubhamxshah/one2n-sre-prod
-    apptag: bf8cfceaa19f0db59331ccd4985b00e84be32eae
+    apptag: 77174ce60c14fbb40199fadad892559e7d4bd223
   service:
     name: student-service
     type: LoadBalancer
