@@ -1,0 +1,45 @@
+configconfig:
+  modules:
+    http_2xx:
+      prober: http
+      timeout: 5s
+      http:
+        preferred_ip_protocol: "ip4"
+        valid_status_codes: [200]
+        valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
+        follow_redirects: true
+        tls_config:
+          insecure_skip_verify: true
+
+serviceMonitor:
+  enabled: true
+  defaults:
+    labels:
+      release: kps
+      app: kube-prometheus-stack
+    interval: 30s
+    scrapeTimeout: 30s
+    module: http_2xx
+  targets:
+    - name: argocd
+      url: argocd-metrics.argocd:8082/metrics
+      labels:
+        app: argocd
+        release: kps
+    - name: vault
+      url: vault.vault.svc.cluster.local:8200
+      labels:
+        app: vault
+        release: kps
+    - name: student-service
+      url: student-service.student-api.svc.cluster.local:3002/healthcheck
+      labels:
+        app: student-api
+        release: kps
+
+resources:
+  limits:
+    memory: 300Mi
+  requests:
+    memory: 50Mi
+    cpu: 100m
