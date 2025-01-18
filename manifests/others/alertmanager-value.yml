@@ -2,8 +2,7 @@ alertmanager:
   config:
     global:
       resolve_timeout: 5m
-      slack_api_url: 'https://hooks.slack.com/services/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'
-
+      slack_api_url: ''
     route:
       receiver: 'slack-notifications'
       group_by: ['alertname', 'job']
@@ -15,20 +14,17 @@ alertmanager:
         matchers:
         - severity=~"warning|critical"
         continue: true
-      # Route for your express app alerts
       - receiver: 'slack-notifications'
         matchers:
         - alertname=~"HighP90Latency|HighP99Latency|HighErrorRate|HighRequestRate"
         group_wait: 10s
         repeat_interval: 1h
-
     inhibit_rules:
       - source_matchers:
         - severity="critical"
         target_matchers:
         - severity="warning"
         equal: ['alertname', 'namespace']
-
     receivers:
     - name: 'slack-notifications'
       slack_configs:
@@ -44,3 +40,136 @@ alertmanager:
           *Started:* {{ .StartsAt.Format "2006-01-02 15:04:05" }}
           {{ if ne .Status "firing" }}*Resolved:* {{ .EndsAt.Format "2006-01-02 15:04:05" }}{{ end }}
           {{ end }}
+
+prometheus:
+  additionalPrometheusRulesMap:
+    production-alerts:
+      groups:
+      # Resource Utilization Alerts
+      - name: resource_alerts
+        rules:
+        - alert: HighCPUUsage
+          expr: |
+            100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High CPU usage detected"
+            description: "CPU usage is above 80% on {{ $labels.instance }} for 5 minutes"
+
+        - alert: CriticalCPUUsage
+          expr: |
+            100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 90
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Critical CPU usage detected"
+            description: "CPU usage is above 90% on {{ $labels.instance }} for 5 minutes"
+
+        - alert: HighDiskUsage
+          expr: |
+            100 - ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes) > 80
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High disk usage detected"
+            description: "Disk usage is above 80% on {{ $labels.instance }} ({{ $labels.mountpoint }})"
+
+        - alert: CriticalDiskUsage
+          expr: |
+            100 - ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes) > 90
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Critical disk usage detected"
+            description: "Disk usage is above 90% on {{ $labels.instance }} ({{ $labels.mountpoint }})"
+
+      # Application Performance Alerts
+      - name: application_alerts
+        rules:
+        - alert: HighErrorRate
+          expr: |
+            (sum(rate(http_request_duration_seconds_count{code=~"5.."}[10m])) / sum(rate(http_request_duration_seconds_count[10m]))) * 100 > 5
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "High error rate detected"
+            description: "Error rate is above 5% in the last 10 minutes. Current value: {{ $value }}%"
+
+        - alert: HighP90Latency
+          expr: |
+            histogram_quantile(0.90, sum by(le) (rate(http_request_duration_seconds_bucket[5m]))) > 1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High P90 latency detected"
+            description: "P90 latency is above 1 second. Current value: {{ $value }}s"
+
+        - alert: HighP95Latency
+          expr: |
+            histogram_quantile(0.95, sum by(le) (rate(http_request_duration_seconds_bucket[5m]))) > 2
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High P95 latency detected"
+            description: "P95 latency is above 2 seconds. Current value: {{ $value }}s"
+
+        - alert: HighP99Latency
+          expr: |
+            histogram_quantile(0.99, sum by(le) (rate(http_request_duration_seconds_bucket[5m]))) > 5
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "High P99 latency detected"
+            description: "P99 latency is above 5 seconds. Current value: {{ $value }}s"
+
+        - alert: HighRequestRate
+          expr: |
+            sum(rate(http_request_duration_seconds_count[5m])) > 1000
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High request rate detected"
+            description: "Request rate is above 1000 req/s. Current value: {{ $value }} req/s"
+
+      # Infrastructure Components Alerts
+      - name: infrastructure_alerts
+        rules:
+        - alert: VaultServerRestart
+          expr: |
+            time() - vault_up < 600
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Vault server restart detected"
+            description: "Vault server has restarted in the last 10 minutes"
+
+        - alert: ArgoCDServerRestart
+          expr: |
+            time() - argocd_app_info < 600
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "ArgoCD server restart detected"
+            description: "ArgoCD server has restarted in the last 10 minutes"
+
+        - alert: DatabaseRestart
+          expr: |
+            pg_up < 1 or time() - pg_up < 600
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Database restart detected"
+            description: "PostgreSQL database has restarted in the last 10 minutes"

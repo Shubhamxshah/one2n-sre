@@ -7,7 +7,6 @@ export const app = express();
 app.use(express.json());
 
 const register = new promClient.Registry();
-
 register.setDefaultLabels({
   app: "express-prometheus-monitoring",
 });
@@ -21,18 +20,29 @@ const httpRequestDurationMicroSeconds = new promClient.Histogram({
   buckets: [0.1, 0.3, 0.5, 0.7, 1, 3, 5, 7, 10],
 });
 
+const httpRequestsTotal = new promClient.Counter({
+  name: "http_requests_total",
+  help: "Total number of HTTP requests",
+  labelNames: ["method", "route", "code"],
+});
+
 register.registerMetric(httpRequestDurationMicroSeconds);
+register.registerMetric(httpRequestsTotal);
 
 app.use((req, res, next) => {
   const start = process.hrtime();
 
   res.on("finish", () => {
+    const route = req.route ? req.route.path : req.path;
+    const method = req.method;
+    const statusCode = res.statusCode.toString();
+
+    httpRequestsTotal.labels(method, route, statusCode).inc();
+
     const duration = process.hrtime(start);
     const durationInSeconds = duration[0] + duration[1] / 1e9;
-
-    const statuscode = res.statusCode.toString();
     httpRequestDurationMicroSeconds
-      .labels(req.method, req.route ? req.route.path : req.path, statuscode)
+      .labels(method, route, statusCode)
       .observe(durationInSeconds);
   });
 
