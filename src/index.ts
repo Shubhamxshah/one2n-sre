@@ -1,6 +1,7 @@
 import express from "express";
 import { studentRouter } from "./routes/student";
 import promClient from "prom-client";
+import { alertRouter } from "./routes/alert";
 
 export const app = express();
 app.use(express.json());
@@ -52,3 +53,4 @@ app.get("/metrics", async (_, res) => {
 });
 
 app.use("/api/v1", studentRouter);
+app.use("/test", alertRouter);
