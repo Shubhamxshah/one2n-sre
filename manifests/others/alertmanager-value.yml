@@ -1,0 +1,46 @@
+alertmanager:
+  config:
+    global:
+      resolve_timeout: 5m
+      slack_api_url: 'https://hooks.slack.com/services/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'
+
+    route:
+      receiver: 'slack-notifications'
+      group_by: ['alertname', 'job']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      routes:
+      - receiver: 'slack-notifications'
+        matchers:
+        - severity=~"warning|critical"
+        continue: true
+      # Route for your express app alerts
+      - receiver: 'slack-notifications'
+        matchers:
+        - alertname=~"HighP90Latency|HighP99Latency|HighErrorRate|HighRequestRate"
+        group_wait: 10s
+        repeat_interval: 1h
+
+    inhibit_rules:
+      - source_matchers:
+        - severity="critical"
+        target_matchers:
+        - severity="warning"
+        equal: ['alertname', 'namespace']
+
+    receivers:
+    - name: 'slack-notifications'
+      slack_configs:
+      - channel: '#devops'
+        send_resolved: true
+        icon_emoji: ':warning:'
+        title: '[{{ .Status | toUpper }}] {{ .GroupLabels.alertname }}'
+        text: >-
+          {{ range .Alerts }}
+          *Alert:* {{ .Annotations.summary }}
+          *Description:* {{ .Annotations.description }}
+          *Severity:* {{ .Labels.severity }}
+          *Started:* {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+          {{ if ne .Status "firing" }}*Resolved:* {{ .EndsAt.Format "2006-01-02 15:04:05" }}{{ end }}
+          {{ end }}
