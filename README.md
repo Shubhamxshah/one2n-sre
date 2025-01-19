@@ -82,14 +82,16 @@ docker compose down
 
 ## To run the application in a vm using vagrant:  
    
-1. install vagrant and required vagrant plugins:  
+1. install vagrant 
 ```
 https://developer.hashicorp.com/vagrant/install 
-
+```
+and required vagrant plugins for e.g. if using digitalocean: 
+```
 vagrant plugin install vagrant-digitalocean
 ```
    
-2. setup your digital ocean token: 
+2. setup your digital ocean token: (This is important because it provides env variables to child process in the particular session, e.g. here to vagrant
 ```
 export DIGITALOCEAN_TOKEN='your_toke_here'
 ```
