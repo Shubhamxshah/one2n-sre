@@ -1,12 +1,12 @@
 config:
   datasource:
-    host: 'pg-service.student-api.svc.cluster.local'
+    host: 'pg-service.student-api.svc.cluster.local' # mention the service.namespace of the deployed postgres instance. You can deploy this service monitor in any namespace
     userSecret: 
       name: postgres-secret  
       key: postgres_user
     passwordSecret: 
       name: postgres-secret 
-      key: postgres_password
+      key: postgres_password # removed postgres_db from external secret because didnt know how to set it here.
 
 serviceMonitor:
   enabled: true

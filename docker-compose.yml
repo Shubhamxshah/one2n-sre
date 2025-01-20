@@ -41,7 +41,9 @@ services:
     image: nginx:alpine
     container_name: nginx
     ports:
-      - "8080:80"
+      - "8080:80" # can add direct reverse proxy by converting to 80 as that port is already open and is default if no port is mentioned, similarly 443 if https
+      # 80:80
+      # 443:443
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:

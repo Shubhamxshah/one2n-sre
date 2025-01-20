@@ -1,49 +1,63 @@
 import express from "express";
 import { studentRouter } from "./routes/student";
-import promClient from "prom-client";
+import client from "prom-client";
 import { alertRouter } from "./routes/alert";
 
 export const app = express();
 app.use(express.json());
 
-const register = new promClient.Registry();
+const register = new client.Registry();
 register.setDefaultLabels({
-  app: "express-prometheus-monitoring",
+  app: "studentapp-prometheus-monitoring",
 });
 
-promClient.collectDefaultMetrics({ register });
+client.collectDefaultMetrics({ register });
 
-const httpRequestDurationMicroSeconds = new promClient.Histogram({
+const httpRequestDurationMicroSeconds = new client.Histogram({
   name: "http_request_duration_seconds",
-  help: "Duration of http requests in seconds",
+  help: "Duration of http requests in microseconds",
   labelNames: ["method", "route", "code"],
-  buckets: [0.1, 0.3, 0.5, 0.7, 1, 3, 5, 7, 10],
+  buckets: [0.1, 0.5, 1, 3, 5, 7, 10],
 });
 
-const httpRequestsTotal = new promClient.Counter({
+const httpRequestsTotal = new client.Counter({
   name: "http_requests_total",
   help: "Total number of HTTP requests",
   labelNames: ["method", "route", "code"],
+});
+
+const activeRequestsGauge = new client.Gauge({
+  name: "active_requests",
+  help: "Number of active requests",
 });
 
 register.registerMetric(httpRequestDurationMicroSeconds);
 register.registerMetric(httpRequestsTotal);
 
 app.use((req, res, next) => {
-  const start = process.hrtime();
+  const startTime = Date.now();
+  activeRequestsGauge.inc();
 
   res.on("finish", () => {
-    const route = req.route ? req.route.path : req.path;
-    const method = req.method;
-    const statusCode = res.statusCode.toString();
+    const endTime = Date.now();
+    const duration = endTime - startTime;
 
-    httpRequestsTotal.labels(method, route, statusCode).inc();
+    httpRequestsTotal.inc({
+      method: req.method,
+      route: req.route ? req.route.path : req.path,
+      code: res.statusCode,
+    });
 
-    const duration = process.hrtime(start);
-    const durationInSeconds = duration[0] + duration[1] / 1e9;
-    httpRequestDurationMicroSeconds
-      .labels(method, route, statusCode)
-      .observe(durationInSeconds);
+    httpRequestDurationMicroSeconds.observe(
+      {
+        method: req.method,
+        route: req.route ? req.route.path : req.path,
+        code: res.statusCode,
+      },
+      duration,
+    );
+
+    activeRequestsGauge.dec();
   });
 
   next();

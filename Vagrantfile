@@ -1,6 +1,6 @@
 Vagrant.configure("2") do |config|
   config.vm.provider :digital_ocean do |provider, override|
-    override.ssh.private_key_path = '~/.ssh/id_rsa'
+    override.ssh.private_key_path = '~/.ssh/id_rsa' # this automatically creates a private ssh key in your local machine at ~/.ssh/id_rsa and adds a public ssh key in settings>security>ssh keys in your digital ocean account authenticated with digitalocean token so you dont need to do all of this manually
     override.vm.box = 'digital_ocean'
     override.vm.box_url = "https://github.com/devopsgroup-io/vagrant-digitalocean/raw/master/box/digital_ocean.box"
     

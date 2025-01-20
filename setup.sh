@@ -82,7 +82,7 @@ main() {
         exit 1
     }
 
-    install_make || {
+    install_make || {   # NOTE: there is no need of makefile over here so remove in future
         echo "Make installation failed"
         exit 1
     }

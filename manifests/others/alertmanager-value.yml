@@ -1,46 +1,47 @@
-alertmanager:
-  config:
-    global:
-      resolve_timeout: 5m
-      slack_api_url: ''
-    route:
-      receiver: 'slack-notifications'
-      group_by: ['alertname', 'job']
-      group_wait: 30s
-      group_interval: 5m
-      repeat_interval: 12h
-      routes:
-      - receiver: 'slack-notifications'
-        matchers:
-        - severity=~"warning|critical"
-        continue: true
-      - receiver: 'slack-notifications'
-        matchers:
-        - alertname=~"HighP90Latency|HighP99Latency|HighErrorRate|HighRequestRate"
-        group_wait: 10s
-        repeat_interval: 1h
-    inhibit_rules:
-      - source_matchers:
-        - severity="critical"
-        target_matchers:
-        - severity="warning"
-        equal: ['alertname', 'namespace']
-    receivers:
-    - name: 'slack-notifications'
-      slack_configs:
-      - channel: '#devops'
-        send_resolved: true
-        icon_emoji: ':warning:'
-        title: '[{{ .Status | toUpper }}] {{ .GroupLabels.alertname }}'
-        text: >-
-          {{ range .Alerts }}
-          *Alert:* {{ .Annotations.summary }}
-          *Description:* {{ .Annotations.description }}
-          *Severity:* {{ .Labels.severity }}
-          *Started:* {{ .StartsAt.Format "2006-01-02 15:04:05" }}
-          {{ if ne .Status "firing" }}*Resolved:* {{ .EndsAt.Format "2006-01-02 15:04:05" }}{{ end }}
-          {{ end }}
+global:
+  resolve_timeout: 5m
 
+route:
+  receiver: 'slack-notifications'
+  group_by: ['alertname']  # Simplified grouping
+  group_wait: 10s          # Reduced for faster initial notification
+  group_interval: 30s      # Reduced for testing
+  repeat_interval: 1h      # Reduced from 12h
+  routes:
+  - receiver: 'slack-notifications'
+    matchers:
+    - severity=~"warning|critical"
+    continue: true
+
+inhibit_rules:
+- equal:
+  - alertname
+  - namespace
+  source_matchers:
+  - severity="critical"
+  target_matchers:
+  - severity="warning"
+
+receivers:
+- name: 'slack-notifications'
+  slack_configs:
+  - channel: '#devops'
+    send_resolved: true
+    icon_emoji: ':warning:'
+    # Added more context to the messages
+    title: >-
+      [{{ .Status | toUpper }}] {{ .GroupLabels.alertname }} - {{ len .Alerts }} alert(s)
+    text: >-
+      {{- range .Alerts }}
+      *Alert:* {{ .Annotations.summary }}
+      *Description:* {{ .Annotations.description }}
+      *Severity:* {{ .Labels.severity }}
+      *Value:* {{ .Labels.value }}
+      *Started:* {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+      {{- if ne .Status "firing" }}
+      *Resolved:* {{ .EndsAt.Format "2006-01-02 15:04:05" }}
+      {{- end }}
+      {{ end }}
 prometheus:
   additionalPrometheusRulesMap:
     production-alerts:
@@ -50,7 +51,7 @@ prometheus:
         rules:
         - alert: HighCPUUsage
           expr: |
-            100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+            avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m]) * 100) < 20
           for: 5m
           labels:
             severity: warning
@@ -58,19 +59,9 @@ prometheus:
             summary: "High CPU usage detected"
             description: "CPU usage is above 80% on {{ $labels.instance }} for 5 minutes"
 
-        - alert: CriticalCPUUsage
-          expr: |
-            100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 90
-          for: 5m
-          labels:
-            severity: critical
-          annotations:
-            summary: "Critical CPU usage detected"
-            description: "CPU usage is above 90% on {{ $labels.instance }} for 5 minutes"
-
         - alert: HighDiskUsage
           expr: |
-            100 - ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes) > 80
+            (node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 20
           for: 5m
           labels:
             severity: warning
@@ -78,22 +69,12 @@ prometheus:
             summary: "High disk usage detected"
             description: "Disk usage is above 80% on {{ $labels.instance }} ({{ $labels.mountpoint }})"
 
-        - alert: CriticalDiskUsage
-          expr: |
-            100 - ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes) > 90
-          for: 5m
-          labels:
-            severity: critical
-          annotations:
-            summary: "Critical disk usage detected"
-            description: "Disk usage is above 90% on {{ $labels.instance }} ({{ $labels.mountpoint }})"
-
       # Application Performance Alerts
       - name: application_alerts
         rules:
         - alert: HighErrorRate
           expr: |
-            (sum(rate(http_request_duration_seconds_count{code=~"5.."}[10m])) / sum(rate(http_request_duration_seconds_count[10m]))) * 100 > 5
+            sum(rate(http_requests_total{status=~"5.."}[10m])) / sum(rate(http_requests_total[10m])) * 100 > 5
           for: 2m
           labels:
             severity: critical
@@ -111,16 +92,6 @@ prometheus:
             summary: "High P90 latency detected"
             description: "P90 latency is above 1 second. Current value: {{ $value }}s"
 
-        - alert: HighP95Latency
-          expr: |
-            histogram_quantile(0.95, sum by(le) (rate(http_request_duration_seconds_bucket[5m]))) > 2
-          for: 5m
-          labels:
-            severity: warning
-          annotations:
-            summary: "High P95 latency detected"
-            description: "P95 latency is above 2 seconds. Current value: {{ $value }}s"
-
         - alert: HighP99Latency
           expr: |
             histogram_quantile(0.99, sum by(le) (rate(http_request_duration_seconds_bucket[5m]))) > 5
@@ -131,45 +102,35 @@ prometheus:
             summary: "High P99 latency detected"
             description: "P99 latency is above 5 seconds. Current value: {{ $value }}s"
 
-        - alert: HighRequestRate
-          expr: |
-            sum(rate(http_request_duration_seconds_count[5m])) > 1000
-          for: 5m
-          labels:
-            severity: warning
-          annotations:
-            summary: "High request rate detected"
-            description: "Request rate is above 1000 req/s. Current value: {{ $value }} req/s"
-
-      # Infrastructure Components Alerts
+      # Infrastructure Components Alerts (using Blackbox metrics)
       - name: infrastructure_alerts
         rules:
-        - alert: VaultServerRestart
+        - alert: VaultServerDown
           expr: |
-            time() - vault_up < 600
+            probe_success{instance="vault.vault.svc.cluster.local:8200"} == 0
           for: 1m
           labels:
             severity: critical
           annotations:
-            summary: "Vault server restart detected"
-            description: "Vault server has restarted in the last 10 minutes"
+            summary: "Vault server is down"
+            description: "Vault server is not responding to HTTP checks"
 
-        - alert: ArgoCDServerRestart
+        - alert: ArgoCDServerDown
           expr: |
-            time() - argocd_app_info < 600
+            probe_success{instance="argocd-metrics.argocd:8082/metrics"} == 0
           for: 1m
           labels:
             severity: critical
           annotations:
-            summary: "ArgoCD server restart detected"
-            description: "ArgoCD server has restarted in the last 10 minutes"
+            summary: "ArgoCD server is down"
+            description: "ArgoCD server is not responding to HTTP checks"
 
-        - alert: DatabaseRestart
+        - alert: DatabaseDown
           expr: |
-            pg_up < 1 or time() - pg_up < 600
+            pg_up == 0
           for: 1m
           labels:
             severity: critical
           annotations:
-            summary: "Database restart detected"
-            description: "PostgreSQL database has restarted in the last 10 minutes"
+            summary: "Database is down"
+            description: "PostgreSQL database is not responding"

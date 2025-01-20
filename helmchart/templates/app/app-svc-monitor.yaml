@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.app.service.name }} 
   namespace: {{ .Values.namespace }}
   labels:
-    release: {{ .Values.monitoring.release }} # matches kube-prometheus-stack release label
+    release: {{ .Values.monitoring.release }} # matches kube-prometheus-stack release label for prometheus to discover this servicemonitor
 spec:
   selector:
     matchLabels:
