@@ -9,38 +9,31 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
     nginx.ingress.kubernetes.io/use-regex: "true"
-    nginx.ingress.kubernetes.io/proxy-set-headers: |
-      Upgrade $http_upgrade;
-      Connection "upgrade";
-
 spec:
   ingressClassName: nginx
   rules:
-  - host: student-app.shubhamxshah.xyz
+  - host: one2n.shubhamxshah.xyz
     http:
       paths:
-      - path: /prom/(/|$)(.*)
+      - path: /prom(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
           service:
-            name: kps-kube-prometheus-stack-prometheus
-            namespace: monitoring
+            name: prometheus-service 
             port:
               number: 9090
-      - path: /grafana/(/|$)(.*)
+      - path: /grafana(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
           service:
-            name: kps-grafana
-            namespace: monitoring
+            name: grafana-service 
             port:
               number: 80
-      - path: /student-app/(/|$)(.*)
+      - path: /()(.*)
         pathType: ImplementationSpecific
         backend:
           service:
-            name: student-service
-            namespace: student-api
+            name: student-service-proxy
             port:
               number: 3002
 
