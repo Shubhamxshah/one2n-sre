@@ -46,3 +46,5 @@ monitoring:
 
 ingress:
   host: one2n.shubhamxshah.xyz
+  name: web-apps-ingress 
+  namespace: default
