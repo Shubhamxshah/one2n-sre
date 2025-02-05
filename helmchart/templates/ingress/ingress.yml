@@ -19,21 +19,21 @@ spec:
         pathType: ImplementationSpecific
         backend:
           service:
-            name: kps-kube-prometheus-stack-prometheus.monitoring.svc.cluster.local 
+            name: prometheus-service 
             port:
               number: 9090
       - path: /grafana(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
           service:
-            name: kps-grafana.monitoring.svc.cluster.local 
+            name: grafana-service 
             port:
               number: 80
       - path: /()(.*)
         pathType: ImplementationSpecific
         backend:
           service:
-            name: student-service.student-api.svc.cluster.local
+            name: student-service-proxy
             port:
               number: 3002
 

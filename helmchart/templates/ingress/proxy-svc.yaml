@@ -1,0 +1,40 @@
+# prometheus-externalname-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-service
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: kps-kube-prometheus-stack-prometheus.monitoring.svc.cluster.local
+  ports:
+  - port: 9090
+---
+# grafana-externalname-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-service
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: kps-grafana.monitoring.svc.cluster.local
+  ports:
+  - port: 80
+---
+# student-app-externalname-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: student-service-proxy
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/upstream-vhost: student-service.student-api.svc.cluster.local
+spec:
+  type: ExternalName
+  externalName: student-service.student-api.svc.cluster.local
+  ports:
+  - port: 3002
+    targetPort: 3002
+    protocol: TCP
+
