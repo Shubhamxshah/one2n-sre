@@ -8,7 +8,7 @@ app:
     apptag: df3a547f29b0f1e619e3424c5cdf166d6c63ba15
   service:
     name: student-service
-    type: LoadBalancer
+    type: ClusterIP
     port: 3002
     targetPort: 3002
     portname: backend
@@ -43,3 +43,6 @@ monitoring:
   name: student-monitoring
   release: kps
   interval: 15s
+
+ingress:
+  host: one2n.shubhamxshah.xyz

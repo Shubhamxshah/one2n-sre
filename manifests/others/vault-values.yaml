@@ -1,0 +1,45 @@
+injector:
+  enabled: false
+server:
+  image:
+    repository: "hashicorp/vault"
+    tag: "1.9.0"
+    # Overrides the default Image Pull Policy
+    pullPolicy: IfNotPresent
+
+  # Configure the Update Strategy Type for the StatefulSet
+  updateStrategyType: "OnDelete"
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 256Mi
+      cpu: 250m
+  ha:
+    enabled: true
+    replicas: 3
+    raft:
+      enabled: true
+      config: |
+        ui = true
+        listener "tcp" {
+          tls_disable = 1
+          address = "[::]:8200"
+          cluster_address = "[::]:8201"
+        }
+        seal "azurekeyvault" {
+          tenant_id       = "0fd16XXX-xxxx-xxxx-xxxx-xxxx"
+          client_id       = "ab509eca-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+          client_secret   = "UTb7Q~xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          vault_name      = "vault-k8s-data"
+          key_name        = "vault-k8s-unsealer-key"
+          subscription_id = "c83a96b1-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+        }
+        storage "raft" {
+          path = "/vault/data"
+        }
+        service_registration "kubernetes" {}
+  dataStorage:
+    enabled: true
+    size: 500Mi
