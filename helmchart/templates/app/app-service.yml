@@ -10,6 +10,7 @@ spec:
   ports:
     - port: {{ .Values.app.service.port }}
       targetPort: {{ .Values.app.service.targetPort }}
-      name: {{ .Values.app.service.portname }}
+      name: {{ .Values.app.service.portname }} # for service monitor to discover our service
+      protocol: TCP
   selector:
     {{- include "student-app.labels" . | nindent 4 }}

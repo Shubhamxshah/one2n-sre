@@ -35,5 +35,6 @@ spec:
   ports:
     - port: 3002
       targetPort: 3002
+      protocol: TCP
   selector:
     app: student-app
