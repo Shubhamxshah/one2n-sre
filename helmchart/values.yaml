@@ -8,7 +8,7 @@ app:
     apptag: a6300ae94f35b92233fc6f6957f570207e7ff781
   service:
     name: student-service
-    type: ClusterIP
+    type: LoadBalancer
     port: 3002
     targetPort: 3002
     portname: backend
