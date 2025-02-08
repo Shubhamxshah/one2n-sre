@@ -15,7 +15,7 @@ spec:
   - host: one2n.shubhamxshah.xyz
     http:
       paths:
-      - path: /()(.*)
+      - path: /healthcheck
         pathType: ImplementationSpecific
         backend:
           service:
