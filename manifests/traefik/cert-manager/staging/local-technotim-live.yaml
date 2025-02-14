@@ -11,5 +11,5 @@ spec:
     kind: ClusterIssuer
   commonName: "*.shubhamxshah.xyz"
   dnsNames:
-  - ".shubhamxshah.xyz"
+  - "shubhamxshah.xyz"
   - "*.shubhamxshah.xyz" # adding * creates a wildcard certificate.
