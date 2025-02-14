@@ -1,0 +1,15 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: local-example-com
+  namespace: student-api # should be in the same namespace where your traefik and ingress lives. 
+spec:
+  secretName: local-shubhamxshah-live-staging-tls # use this to put into kubernetes ingress
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer
+  commonName: "*.shubhamxshah.xyz"
+  dnsNames:
+  - ".shubhamxshah.xyz"
+  - "*.shubhamxshah.xyz" # adding * creates a wildcard certificate.

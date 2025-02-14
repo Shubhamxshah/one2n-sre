@@ -1,0 +1,26 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nginx
+  namespace: student-api
+  annotations: 
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`www.one2n.shubhamxshah.xyz`)
+      kind: Rule
+      services:
+        - name: nginx
+          port: 3002
+    - match: Host(`one2n.shubhamxshah.xyz`)
+      kind: Rule
+      services:
+        - name: nginx
+          port: 3002
+      middlewares:
+        - name: default-headers
+  tls:
+    secretName: local-shubhamxshah-live-staging-tls
