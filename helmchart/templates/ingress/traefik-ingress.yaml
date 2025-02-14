@@ -13,12 +13,12 @@ spec:
     - match: Host(`www.one2n.shubhamxshah.xyz`)
       kind: Rule
       services:
-        - name: nginx
+        - name: student-service
           port: 3002
     - match: Host(`one2n.shubhamxshah.xyz`)
       kind: Rule
       services:
-        - name: nginx
+        - name: student-service
           port: 3002
       middlewares:
         - name: default-headers
