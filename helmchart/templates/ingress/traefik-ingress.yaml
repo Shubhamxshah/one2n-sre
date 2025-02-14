@@ -18,4 +18,4 @@ spec:
       middlewares:
         - name: default-headers
   tls:
-    secretName: local-bhamshub-live-staging-tls
+    secretName: local-shubhamxshah-live-staging-tls
