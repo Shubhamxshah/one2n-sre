@@ -63,6 +63,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/", (_, res) => {
+  res.json("hi shubham");
+});
+
 app.get("/healthcheck", (_, res) => {
   res.json("healthy");
 });
