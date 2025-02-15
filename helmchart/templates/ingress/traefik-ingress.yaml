@@ -10,7 +10,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`one2n.shubhamxshah.xyz`) && PathPrefix(`/`)
+    - match: Host(`one2n.shubhamxshah.xyz`)
       kind: Rule
       services:
         - name: student-service
