@@ -14,8 +14,8 @@ spec:
           cloudflare:
             email: shubhamxshahwork@gmail.com 
             apiTokenSecretRef:
-              name: cloudflare-token-secret
-              key: cloudflare-token
+              name: cloudflare-token-secret # name of secret-cf-token
+              key: cloudflare-token # name of string data in secret 
         selector:
           dnsZones:
             - "shubhamxshah.xyz"

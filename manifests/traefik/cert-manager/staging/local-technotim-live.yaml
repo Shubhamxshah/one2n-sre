@@ -2,7 +2,7 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: local-example-com
+  name: one2n-staging-certificate
   namespace: student-api # should be in the same namespace where your traefik and ingress lives. 
 spec:
   secretName: local-shubhamxshah-live-staging-tls # use this to put into kubernetes ingress
