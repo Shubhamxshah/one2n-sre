@@ -5,7 +5,7 @@ app:
   replicaCount: 2
   image:
     repository: shubhamxshah/one2n-sre-prod
-    apptag: fb69ac63d1872b86ba2c2bc089f79fa943b63236
+    apptag: 544d28263cb713eaa78da9d3afe4f8faf48c6154
   service:
     name: student-service
     type: ClusterIP
