@@ -65,7 +65,7 @@ app.use((req, res, next) => {
 
 app.get("/", (_, res) => {
   res.json(
-    "hi sharath, you're a fooseball champ. (P.S. getting you this instead of silk because im broke and unemployed)",
+    "hi sharath, you're a fooseball champ!! \n (P.S. getting you this instead of silk because im broke and unemployed)",
   );
 });
 
