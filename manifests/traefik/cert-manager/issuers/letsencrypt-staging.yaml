@@ -1,4 +1,3 @@
----
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer # its a cluster wide resource so you can apply it anywhere. 
 metadata:

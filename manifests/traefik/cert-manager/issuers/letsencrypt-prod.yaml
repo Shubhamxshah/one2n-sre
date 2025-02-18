@@ -13,7 +13,7 @@ spec:
           cloudflare:
             email: shubhamxshahwork@gmail.com
             apiTokenSecretRef:
-              name: cloudflare-token-secret
+              name: cloudflare-token-secret #comes from secret-cf-token.yaml which should be applied before.
               key: cloudflare-token
         selector:
           dnsZones:

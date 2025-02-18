@@ -5,10 +5,25 @@ prometheus:
     serviceMonitorNamespaceSelector: {}
 
 grafana:
+  enabled: true
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      traefik.ingress.kubernetes.io/router.tls: "true"
+      cert-manager.io/cluster-issuer: "letsencrypt-production" # this cluster issuer has to be present in cluster before applying this so it automatically creates this secret and applies to your host, just apply this and you dont need to apply a grafana-tls-secret manually. 
+    hosts:
+    - grafana-one2n.shubhamxshah.xyz
+    tls:
+    - secretName: grafana-tls-secret
+      hosts:
+      - grafana-one2n.shubhamxshah.xyz
+
   sidecar:
     datasources:
       defaultDatasourceEnabled: true
   additionalDataSources:
-    - name: Loki
-      type: loki
-      url: http://loki-loki-distributed-query-frontend.monitoring:3100
+  - name: Loki
+    type: loki
+    url: http://loki-loki-distributed-query-frontend.monitoring:3100

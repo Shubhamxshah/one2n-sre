@@ -2,14 +2,14 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: prod-certificate
+  name: one2n-prod-certificate
   namespace: student-api
 spec:
   secretName: local-shubhamxshah-live-prod-tls
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
-  commonName: "*.shubhamxshahwork@gmail.com"
+  commonName: "*.shubhamxshah.xyz"
   dnsNames:
-  - "shubhamxshahwork@gmail.com"
-  - "*.shubhamxshahwork@gmail.com"
+  - "shubhamxshah.xyz"
+  - "*.shubhamxshah.xyz"
