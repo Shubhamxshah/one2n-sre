@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "dev": "nodemon src/bin.ts",
-    "build": "tsc -b",
-    "start": "node dist/bin.js",
+    "dev": "node init && nodemon src/bin.ts",
+    "build": "node init && tsc -b",
+    "start": "node init && node dist/bin.js",
     "format": "pnpm exec prettier . --write",
     "format:check": "prettier --check \"**/*.{ts,tsx,json}\"",
     "lint:check": "eslint --max-warnings 0 . --fix",
