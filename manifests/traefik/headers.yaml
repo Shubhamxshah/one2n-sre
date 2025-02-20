@@ -4,9 +4,6 @@ metadata:
   name: default-headers
   namespace: student-api
 spec:
-  redirectScheme: 
-    scheme: https
-    permanent: true 
   headers:
     sslRedirect: true
     browserXssFilter: true

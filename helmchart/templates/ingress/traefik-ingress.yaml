@@ -19,3 +19,20 @@ spec:
         - name: default-headers
   tls:
     secretName: local-shubhamxshah-live-prod-tls
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: student-api-route-http
+  namespace: student-api
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`one2n.shubhamxshah.xyz`)
+      kind: Rule
+      middlewares:
+        - name: redirect-to-https
+      services:
+        - name: student-service
+          port: 3002
