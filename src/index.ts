@@ -64,9 +64,7 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (_, res) => {
-  res.json(
-    "hi sharath, you're a fooseball champ!! \n (P.S. getting you this instead of silk because im broke and unemployed)",
-  );
+  res.json("hi shubham");
 });
 
 app.get("/healthcheck", (_, res) => {
